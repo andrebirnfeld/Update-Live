@@ -58,12 +58,14 @@ async function updateData() {
     }
 }
 
-        window.onload = loadData;
+       document.addEventListener('DOMContentLoaded', (event) => {
+        loadData();
+    });
     </script>
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.4</p>
+    <p>version 1.5</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
