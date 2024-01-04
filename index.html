@@ -12,8 +12,8 @@
         const data = await response.json();
         console.log(data);
 
-        if (data && Array.isArray(data) && data.length > 0) {
-            const item = data[0]; // Assuming data is ordered and the first item is the most recent
+        if (data.Items && Array.isArray(data.Items) && data.Items.length > 0) {
+            const item = data.Items[0];
             document.getElementById('promptInput').value = item.prompt || '';
             document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
             document.getElementById('spriteLinkInput').value = item.spriteLink || '';
@@ -65,7 +65,7 @@ async function updateData() {
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.5</p>
+    <p>version 1.6</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
