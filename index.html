@@ -7,58 +7,64 @@
         const tableName = 'UpdateLive'; // Add your DynamoDB table name here
 
         async function loadData() {
-    try {
-        const response = await fetch(`${apiURL}?TableName=${tableName}`);
-        const data = await response.json();
+            try {
+                const response = await fetch(`${apiURL}?TableName=${tableName}`);
+                const data = await response.json();
 
-        // Log the data to see what's actually being returned
-        console.log(data);
+                // Log the data to see what's actually being returned
+                console.log(data);
 
-        // Check if data contains items and handle accordingly
-        if (data && Array.isArray(data) && data.length > 0) {
-            const item = data[0];
-            document.getElementById('promptInput').value = item.prompt || '';
-            document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
-            document.getElementById('spriteLinkInput').value = item.spriteLink || '';
-        } else {
-            console.log('No items returned from the database.');
-            // Handle case where no items are found - maybe clear the input fields or show a message
-            document.getElementById('promptInput').value = '';
-            document.getElementById('audienceMessageInput').value = '';
-            document.getElementById('spriteLinkInput').value = '';
+                // Check if data contains items and handle accordingly
+                if (data && Array.isArray(data) && data.length > 0) {
+                    // Sort data by updateId in descending order (assuming updateId is in ISO 8601 format)
+                    data.sort((a, b) => (a.updateId < b.updateId) ? 1 : -1);
+                    
+                    const latestItem = data[0];
+                    document.getElementById('promptInput').value = latestItem.prompt || '';
+                    document.getElementById('audienceMessageInput').value = latestItem.audienceMessage || '';
+                    document.getElementById('spriteLinkInput').value = latestItem.spriteLink || '';
+                    document.getElementById('bgLinkInput').value = latestItem.bgLink || '';
+                } else {
+                    console.log('No items returned from the database.');
+                    // Handle case where no items are found - maybe clear the input fields or show a message
+                    document.getElementById('promptInput').value = '';
+                    document.getElementById('audienceMessageInput').value = '';
+                    document.getElementById('spriteLinkInput').value = '';
+                    document.getElementById('bgLinkInput').value = '';
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
         }
-    } catch (error) {
-        console.error('Error loading data:', error);
-    }
-}
 
         async function updateData() {
-    try {
-        // Generate a unique updateId based on the current timestamp
-        const updateId = `update-${new Date().toISOString()}`;
+            try {
+                // Generate a unique updateId based on the current timestamp
+                const updateId = `update-${new Date().toISOString()}`;
 
-        const newData = {
-            TableName: 'UpdateLive',
-            Item: {
-                updateId: updateId, // Use the generated unique identifier
-                prompt: document.getElementById('promptInput').value,
-                audienceMessage: document.getElementById('audienceMessageInput').value,
-                spriteLink: document.getElementById('spriteLinkInput').value
+                const newData = {
+                    TableName: 'UpdateLive',
+                    Item: {
+                        updateId: updateId, // Use the generated unique identifier
+                        prompt: document.getElementById('promptInput').value,
+                        audienceMessage: document.getElementById('audienceMessageInput').value,
+                        spriteLink: document.getElementById('spriteLinkInput').value,
+                        bgLink: document.getElementById('bgLinkInput').value // Add BG link
+                    }
+                };
+
+                await fetch(apiURL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newData)
+                });
+
+                alert('Data updated successfully');
+                loadData(); // Reload data after update
+            } catch (error) {
+                console.error('Error updating data:', error);
             }
-        };
-
-        await fetch(apiURL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(newData)
-        });
-
-        alert('Data updated successfully');
-        loadData(); // Reload data after update
-    } catch (error) {
-        console.error('Error updating data:', error);
-    }
-}
+        }
 
         window.onload = loadData;
     </script>
@@ -73,7 +79,10 @@
         <input type="text" id="audienceMessageInput" name="audienceMessage"><br>
 
         <label for="spriteLinkInput">Sprite Link:</label><br>
-        <input type="text" id="spriteLinkInput" name="spriteLink"><br><br>
+        <input type="text" id="spriteLinkInput" name="spriteLink"><br>
+
+        <label for="bgLinkInput">BG Link:</label><br> <!-- Added BG Link input -->
+        <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
     </div>
