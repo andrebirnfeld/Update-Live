@@ -7,19 +7,30 @@
         const tableName = 'UpdateLive'; // Add your DynamoDB table name here
 
         async function loadData() {
-            try {
-                const response = await fetch(`${apiURL}?TableName=${tableName}`); // Include the table name in the query string
-                const data = await response.json();
+    try {
+        const response = await fetch(`${apiURL}?TableName=${tableName}`);
+        const data = await response.json();
 
-                // Assuming data is an array of items and you want the first one
-                const item = data[0]; 
-                document.getElementById('promptInput').value = item.prompt || '';
-                document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
-                document.getElementById('spriteLinkInput').value = item.spriteLink || '';
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
+        // Log the data to see what's actually being returned
+        console.log(data);
+
+        // Check if data contains items and handle accordingly
+        if (data && Array.isArray(data) && data.length > 0) {
+            const item = data[0];
+            document.getElementById('promptInput').value = item.prompt || '';
+            document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
+            document.getElementById('spriteLinkInput').value = item.spriteLink || '';
+        } else {
+            console.log('No items returned from the database.');
+            // Handle case where no items are found - maybe clear the input fields or show a message
+            document.getElementById('promptInput').value = '';
+            document.getElementById('audienceMessageInput').value = '';
+            document.getElementById('spriteLinkInput').value = '';
         }
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
 
         async function updateData() {
     try {
