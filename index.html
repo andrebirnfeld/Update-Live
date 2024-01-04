@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Data Editor</title>
+    <script>
+        const apiURL = 'https://your-api-gateway-url';
+
+        async function loadData() {
+            try {
+                const response = await fetch(apiURL);
+                const data = await response.json();
+
+                document.getElementById('promptInput').value = data.prompt || '';
+                document.getElementById('audienceMessageInput').value = data.audienceMessage || '';
+                document.getElementById('spriteLinkInput').value = data.spriteLink || '';
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        async function updateData() {
+            try {
+                const newData = {
+                    prompt: document.getElementById('promptInput').value,
+                    audienceMessage: document.getElementById('audienceMessageInput').value,
+                    spriteLink: document.getElementById('spriteLinkInput').value
+                };
+
+                await fetch(apiURL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newData)
+                });
+
+                alert('Data updated successfully');
+            } catch (error) {
+                console.error('Error updating data:', error);
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</head>
+<body>
+    <h1>Game Data Editor</h1>
+    <div>
+        <label for="promptInput">Prompt:</label><br>
+        <input type="text" id="promptInput" name="prompt"><br>
+
+        <label for="audienceMessageInput">Audience Message:</label><br>
+        <input type="text" id="audienceMessageInput" name="audienceMessage"><br>
+
+        <label for="spriteLinkInput">Sprite Link:</label><br>
+        <input type="text" id="spriteLinkInput" name="spriteLink"><br><br>
+
+        <button onclick="updateData()">Update Game Data</button>
+    </div>
+</body>
+</html>
