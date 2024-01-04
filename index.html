@@ -91,22 +91,24 @@ async function updateData() {
     }
 }
 
-       document.addEventListener('DOMContentLoaded', (event) => {
-        loadData();
-           const bgLink = document.getElementById('bgLinkInput').value;
+       function previewUpdate() {
+    // Get current values from input fields
+    const bgLink = document.getElementById('bgLinkInput').value;
     const spriteLink = document.getElementById('spriteLinkInput').value;
     const audienceMessage = document.getElementById('audienceMessageInput').value;
-    updatePreview(bgLink, spriteLink, audienceMessage);
-    });
-        function updatePreview(bgLink, spriteLink, audienceMessage) {
-            const previewContainer = document.getElementById('previewContainer');
-            const spriteImage = document.getElementById('spriteImage');
-            const messageBox = document.getElementById('messageBox');
 
-            previewContainer.style.backgroundImage = `url('${bgLink}')`;
-            spriteImage.src = spriteLink;
-            messageBox.textContent = audienceMessage;
-        }
+    // Update the preview
+    updatePreview(bgLink, spriteLink, audienceMessage);
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    loadData();
+
+    // Set up listeners for input fields to update preview on input change
+    document.getElementById('bgLinkInput').addEventListener('input', previewUpdate);
+    document.getElementById('spriteLinkInput').addEventListener('input', previewUpdate);
+    document.getElementById('audienceMessageInput').addEventListener('input', previewUpdate);
+});
     </script>
 </head>
 <body>
@@ -124,12 +126,12 @@ async function updateData() {
         <label for="bgLinkInput">Background Link:</label><br>
         <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
-        <button onclick="updateData()">Update Game Data</button>
         <br><br>
         <p>Preview</p><br>
         <div id="previewContainer">
         <img id="spriteImage" src="" alt="Sprite Image">
-        <div id="messageBox"></div>
+        <div id="messageBox"></div><br>
+        <button onclick="updateData()">Update Game Data</button>
     </div>
     </div>
 </body>
