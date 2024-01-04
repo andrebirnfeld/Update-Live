@@ -4,33 +4,24 @@
     <title>Game Data Editor</title>
     <script>
         const apiURL = 'https://u8der8ty5g.execute-api.us-east-1.amazonaws.com/dev/ReadWriteDDB';
-        const tableName = 'UpdateLive'; // Add your DynamoDB table name here
+        const tableName = 'UpdateLive';
 
         async function loadData() {
             try {
                 const response = await fetch(`${apiURL}?TableName=${tableName}`);
                 const data = await response.json();
 
-                // Log the data to see what's actually being returned
-                console.log(data);
-
                 // Check if data contains items and handle accordingly
                 if (data && Array.isArray(data) && data.length > 0) {
-                    // Sort data by updateId in descending order (assuming updateId is in ISO 8601 format)
-                    data.sort((a, b) => (a.updateId < b.updateId) ? 1 : -1);
-                    
-                    const latestItem = data[0];
+                    const latestItem = data[0]; // Get the latest item
                     document.getElementById('promptInput').value = latestItem.prompt || '';
                     document.getElementById('audienceMessageInput').value = latestItem.audienceMessage || '';
                     document.getElementById('spriteLinkInput').value = latestItem.spriteLink || '';
-                    document.getElementById('bgLinkInput').value = latestItem.bgLink || '';
+                    document.getElementById('bgLinkInput').value = latestItem.bgLink || ''; // New BG Link field
                 } else {
                     console.log('No items returned from the database.');
-                    // Handle case where no items are found - maybe clear the input fields or show a message
-                    document.getElementById('promptInput').value = '';
-                    document.getElementById('audienceMessageInput').value = '';
-                    document.getElementById('spriteLinkInput').value = '';
-                    document.getElementById('bgLinkInput').value = '';
+                    // Handle case where no items are found
+                    clearInputFields();
                 }
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -45,11 +36,11 @@
                 const newData = {
                     TableName: 'UpdateLive',
                     Item: {
-                        updateId: updateId, // Use the generated unique identifier
+                        updateId: updateId,
                         prompt: document.getElementById('promptInput').value,
                         audienceMessage: document.getElementById('audienceMessageInput').value,
                         spriteLink: document.getElementById('spriteLinkInput').value,
-                        bgLink: document.getElementById('bgLinkInput').value // Add BG link
+                        bgLink: document.getElementById('bgLinkInput').value // New BG Link field
                     }
                 };
 
@@ -60,10 +51,17 @@
                 });
 
                 alert('Data updated successfully');
-                loadData(); // Reload data after update
+                loadData();
             } catch (error) {
                 console.error('Error updating data:', error);
             }
+        }
+
+        function clearInputFields() {
+            document.getElementById('promptInput').value = '';
+            document.getElementById('audienceMessageInput').value = '';
+            document.getElementById('spriteLinkInput').value = '';
+            document.getElementById('bgLinkInput').value = ''; // New BG Link field
         }
 
         window.onload = loadData;
@@ -81,7 +79,7 @@
         <label for="spriteLinkInput">Sprite Link:</label><br>
         <input type="text" id="spriteLinkInput" name="spriteLink"><br>
 
-        <label for="bgLinkInput">BG Link:</label><br> <!-- Added BG Link input -->
+        <label for="bgLinkInput">BG Link:</label><br>
         <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
