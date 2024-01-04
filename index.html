@@ -8,12 +8,15 @@
 
         async function loadData() {
     try {
-        const response = await fetch(`${apiURL}?TableName=${tableName}&OrderBy=updateId&Descending=true`);
-        const data = await response.json();
-        console.log(data);
+        const response = await fetch(`${apiURL}?TableName=${tableName}`);
+        const jsonResponse = await response.json();
 
-        if (data.Items && Array.isArray(data.Items) && data.Items.length > 0) {
-            const item = data.Items[0];
+        if (jsonResponse && jsonResponse.Items && jsonResponse.Items.length > 0) {
+            // Sort the items by updateId in descending order
+            jsonResponse.Items.sort((a, b) => b.updateId.localeCompare(a.updateId));
+
+            // Now the first item is the most recent one
+            const item = jsonResponse.Items[0];
             document.getElementById('promptInput').value = item.prompt || '';
             document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
             document.getElementById('spriteLinkInput').value = item.spriteLink || '';
@@ -30,7 +33,6 @@
         console.error('Error loading data:', error);
     }
 }
-
 async function updateData() {
     try {
         const updateId = `update-${new Date().toISOString()}`;
@@ -65,7 +67,7 @@ async function updateData() {
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.6</p>
+    <p>version 1.7</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
