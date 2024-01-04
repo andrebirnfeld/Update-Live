@@ -1,6 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        #previewContainer {
+            width: 720px;
+            height: 1280px;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+        #spriteImage {
+            width: 206px;
+            position: absolute;
+            top: 250px;
+            left: 100px;
+        }
+        #messageBox {
+            width: 208px;
+            height: 176px;
+            position: absolute;
+            top: 450px;
+            left: 5px;
+            background-color: black;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+    </style>
     <title>Game Data Editor</title>
     <script>
         const apiURL = 'https://u8der8ty5g.execute-api.us-east-1.amazonaws.com/dev/ReadWriteDDB';
@@ -20,7 +47,8 @@
             document.getElementById('promptInput').value = item.prompt || '';
             document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
             document.getElementById('spriteLinkInput').value = item.spriteLink || '';
-            document.getElementById('bgLinkInput').value = item.bgLink || ''; // New field
+            document.getElementById('bgLinkInput').value = item.bgLink || '';
+            updatePreview(item.bgLink || '', item.spriteLink || '', item.audienceMessage || '');
         } else {
             console.log('No items returned from the database.');
             // Clear all fields
@@ -62,12 +90,25 @@ async function updateData() {
 
        document.addEventListener('DOMContentLoaded', (event) => {
         loadData();
+           const bgLink = document.getElementById('bgLinkInput').value;
+    const spriteLink = document.getElementById('spriteLinkInput').value;
+    const audienceMessage = document.getElementById('audienceMessageInput').value;
+    updatePreview(bgLink, spriteLink, audienceMessage);
     });
+        function updatePreview(bgLink, spriteLink, audienceMessage) {
+            const previewContainer = document.getElementById('previewContainer');
+            const spriteImage = document.getElementById('spriteImage');
+            const messageBox = document.getElementById('messageBox');
+
+            previewContainer.style.backgroundImage = `url('${bgLink}')`;
+            spriteImage.src = spriteLink;
+            messageBox.textContent = audienceMessage;
+        }
     </script>
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.7</p>
+    <p>version 1.8</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
@@ -81,6 +122,12 @@ async function updateData() {
         <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
+        <br><br>
+        <p>Preview</p><br>
+        <div id="previewContainer">
+        <img id="spriteImage" src="" alt="Sprite Image">
+        <div id="messageBox"></div>
+    </div>
     </div>
 </body>
 </html>
