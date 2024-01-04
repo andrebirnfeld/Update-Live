@@ -90,8 +90,16 @@ async function updateData() {
         console.error('Error updating data:', error);
     }
 }
+function updatePreview(bgLink, spriteLink, audienceMessage) {
+        const previewContainer = document.getElementById('previewContainer');
+        const spriteImage = document.getElementById('spriteImage');
+        const messageBox = document.getElementById('messageBox');
 
-       function previewUpdate() {
+        previewContainer.style.backgroundImage = `url('${bgLink}')`;
+        spriteImage.src = spriteLink;
+        messageBox.textContent = audienceMessage;
+    }
+function previewUpdate() {
     // Get current values from input fields
     const bgLink = document.getElementById('bgLinkInput').value;
     const spriteLink = document.getElementById('spriteLinkInput').value;
@@ -113,7 +121,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.8</p>
+    <p>version 2.0</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
