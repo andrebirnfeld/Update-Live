@@ -8,42 +8,40 @@
 
         async function loadData() {
     try {
-        const response = await fetch(`${apiURL}?TableName=${tableName}`);
+        const response = await fetch(`${apiURL}?TableName=${tableName}&OrderBy=updateId&Descending=true`);
         const data = await response.json();
-
-        // Log the data to see what's actually being returned
         console.log(data);
 
-        // Check if data contains items and handle accordingly
         if (data && Array.isArray(data) && data.length > 0) {
-            const item = data[0];
+            const item = data[0]; // Assuming data is ordered and the first item is the most recent
             document.getElementById('promptInput').value = item.prompt || '';
             document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
             document.getElementById('spriteLinkInput').value = item.spriteLink || '';
+            document.getElementById('bgLinkInput').value = item.bgLink || ''; // New field
         } else {
             console.log('No items returned from the database.');
-            // Handle case where no items are found - maybe clear the input fields or show a message
+            // Clear all fields
             document.getElementById('promptInput').value = '';
             document.getElementById('audienceMessageInput').value = '';
             document.getElementById('spriteLinkInput').value = '';
+            document.getElementById('bgLinkInput').value = ''; // New field
         }
     } catch (error) {
         console.error('Error loading data:', error);
     }
 }
 
-        async function updateData() {
+async function updateData() {
     try {
-        // Generate a unique updateId based on the current timestamp
         const updateId = `update-${new Date().toISOString()}`;
-
         const newData = {
             TableName: 'UpdateLive',
             Item: {
-                updateId: updateId, // Use the generated unique identifier
+                updateId: updateId,
                 prompt: document.getElementById('promptInput').value,
                 audienceMessage: document.getElementById('audienceMessageInput').value,
-                spriteLink: document.getElementById('spriteLinkInput').value
+                spriteLink: document.getElementById('spriteLinkInput').value,
+                bgLink: document.getElementById('bgLinkInput').value // New field
             }
         };
 
@@ -65,7 +63,7 @@
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.3</p>
+    <p>version 1.4</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
@@ -75,6 +73,8 @@
 
         <label for="spriteLinkInput">Sprite Link:</label><br>
         <input type="text" id="spriteLinkInput" name="spriteLink"><br><br>
+        <label for="bgLinkInput">Background Link:</label><br>
+        <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
     </div>
