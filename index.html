@@ -4,15 +4,18 @@
     <title>Game Data Editor</title>
     <script>
         const apiURL = 'https://u8der8ty5g.execute-api.us-east-1.amazonaws.com/dev/ReadWriteDDB';
+        const tableName = 'UpdateLive'; // Add your DynamoDB table name here
 
         async function loadData() {
             try {
-                const response = await fetch(apiURL);
+                const response = await fetch(`${apiURL}?TableName=${tableName}`); // Include the table name in the query string
                 const data = await response.json();
 
-                document.getElementById('promptInput').value = data.prompt || '';
-                document.getElementById('audienceMessageInput').value = data.audienceMessage || '';
-                document.getElementById('spriteLinkInput').value = data.spriteLink || '';
+                // Assuming data is an array of items and you want the first one
+                const item = data[0]; 
+                document.getElementById('promptInput').value = item.prompt || '';
+                document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
+                document.getElementById('spriteLinkInput').value = item.spriteLink || '';
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -21,9 +24,12 @@
         async function updateData() {
             try {
                 const newData = {
-                    prompt: document.getElementById('promptInput').value,
-                    audienceMessage: document.getElementById('audienceMessageInput').value,
-                    spriteLink: document.getElementById('spriteLinkInput').value
+                    TableName: tableName, // Include the table name in the data object
+                    Item: { // Wrap the data fields under an Item object
+                        prompt: document.getElementById('promptInput').value,
+                        audienceMessage: document.getElementById('audienceMessageInput').value,
+                        spriteLink: document.getElementById('spriteLinkInput').value
+                    }
                 };
 
                 await fetch(apiURL, {
@@ -33,6 +39,7 @@
                 });
 
                 alert('Data updated successfully');
+                loadData(); // Reload data after update
             } catch (error) {
                 console.error('Error updating data:', error);
             }
