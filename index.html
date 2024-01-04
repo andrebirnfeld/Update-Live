@@ -7,74 +7,65 @@
         const tableName = 'UpdateLive'; // Add your DynamoDB table name here
 
         async function loadData() {
-            try {
-                const response = await fetch(`${apiURL}?TableName=${tableName}`);
-                const data = await response.json();
+    try {
+        const response = await fetch(`${apiURL}?TableName=${tableName}`);
+        const data = await response.json();
 
-                // Check if data contains items and handle accordingly
-                if (data && Array.isArray(data) && data.length > 0) {
-                    // Sort data by updateId in descending order
-                    data.sort((a, b) => (a.updateId < b.updateId ? 1 : -1));
+        // Log the data to see what's actually being returned
+        console.log(data);
 
-                    const latestItem = data[0]; // Get the latest item
-                    document.getElementById('promptInput').value = latestItem.prompt || '';
-                    document.getElementById('audienceMessageInput').value = latestItem.audienceMessage || '';
-                    document.getElementById('spriteLinkInput').value = latestItem.spriteLink || '';
-                    document.getElementById('bgLinkInput').value = latestItem.bgLink || '';
-                } else {
-                    console.log('No items returned from the database.');
-                    // Handle case where no items are found
-                    clearInputFields();
-                }
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
-        async function updateData() {
-            try {
-                // Generate a unique updateId based on the current timestamp
-                const updateId = `update-${new Date().toISOString()}`;
-
-                const newData = {
-                    TableName: 'UpdateLive',
-                    Item: {
-                        updateId: updateId, // Use the generated unique identifier
-                        prompt: document.getElementById('promptInput').value,
-                        audienceMessage: document.getElementById('audienceMessageInput').value,
-                        spriteLink: document.getElementById('spriteLinkInput').value,
-                        bgLink: document.getElementById('bgLinkInput').value // New field
-                    }
-                };
-
-                await fetch(apiURL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newData)
-                });
-
-                alert('Data updated successfully');
-                loadData(); // Reload data after update
-            } catch (error) {
-                console.error('Error updating data:', error);
-            }
-        }
-
-        function clearInputFields() {
+        // Check if data contains items and handle accordingly
+        if (data && Array.isArray(data) && data.length > 0) {
+            const item = data[0];
+            document.getElementById('promptInput').value = item.prompt || '';
+            document.getElementById('audienceMessageInput').value = item.audienceMessage || '';
+            document.getElementById('spriteLinkInput').value = item.spriteLink || '';
+        } else {
+            console.log('No items returned from the database.');
+            // Handle case where no items are found - maybe clear the input fields or show a message
             document.getElementById('promptInput').value = '';
             document.getElementById('audienceMessageInput').value = '';
             document.getElementById('spriteLinkInput').value = '';
-            document.getElementById('bgLinkInput').value = ''; // Clear the new field
         }
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
 
-        window.onload = () => {
-            loadData();
+        async function updateData() {
+    try {
+        // Generate a unique updateId based on the current timestamp
+        const updateId = `update-${new Date().toISOString()}`;
+
+        const newData = {
+            TableName: 'UpdateLive',
+            Item: {
+                updateId: updateId, // Use the generated unique identifier
+                prompt: document.getElementById('promptInput').value,
+                audienceMessage: document.getElementById('audienceMessageInput').value,
+                spriteLink: document.getElementById('spriteLinkInput').value
+            }
         };
+
+        await fetch(apiURL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newData)
+        });
+
+        alert('Data updated successfully');
+        loadData(); // Reload data after update
+    } catch (error) {
+        console.error('Error updating data:', error);
+    }
+}
+
+        window.onload = loadData;
     </script>
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p>version 1.1</p>
+    <p>version 1.3</p>
     <div>
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
@@ -83,10 +74,7 @@
         <input type="text" id="audienceMessageInput" name="audienceMessage"><br>
 
         <label for="spriteLinkInput">Sprite Link:</label><br>
-        <input type="text" id="spriteLinkInput" name="spriteLink"><br>
-
-        <label for="bgLinkInput">BG Link:</label><br> <!-- New field -->
-        <input type="text" id="bgLinkInput" name="bgLink"><br><br>
+        <input type="text" id="spriteLinkInput" name="spriteLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
     </div>
