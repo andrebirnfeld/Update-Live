@@ -34,14 +34,11 @@
                 const updateId = `update-${new Date().toISOString()}`;
 
                 const newData = {
-                    TableName: 'UpdateLive',
-                    Item: {
-                        updateId: updateId,
-                        prompt: document.getElementById('promptInput').value,
-                        audienceMessage: document.getElementById('audienceMessageInput').value,
-                        spriteLink: document.getElementById('spriteLinkInput').value,
-                        bgLink: document.getElementById('bgLinkInput').value // New BG Link field
-                    }
+                    updateId: updateId,
+                    prompt: document.getElementById('promptInput').value,
+                    audienceMessage: document.getElementById('audienceMessageInput').value,
+                    spriteLink: document.getElementById('spriteLinkInput').value,
+                    bgLink: document.getElementById('bgLinkInput').value // New BG Link field
                 };
 
                 await fetch(apiURL, {
@@ -64,12 +61,16 @@
             document.getElementById('bgLinkInput').value = ''; // New BG Link field
         }
 
-        window.onload = loadData;
+        window.onload = () => {
+            loadData();
+        };
     </script>
 </head>
 <body>
     <h1>Game Data Editor</h1>
+    <p id="versionText">1.0</p>
     <div>
+        
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
 
