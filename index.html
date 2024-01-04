@@ -4,7 +4,7 @@
     <title>Game Data Editor</title>
     <script>
         const apiURL = 'https://u8der8ty5g.execute-api.us-east-1.amazonaws.com/dev/ReadWriteDDB';
-        const tableName = 'UpdateLive';
+        const tableName = 'UpdateLive'; // Add your DynamoDB table name here
 
         async function loadData() {
             try {
@@ -13,11 +13,14 @@
 
                 // Check if data contains items and handle accordingly
                 if (data && Array.isArray(data) && data.length > 0) {
+                    // Sort data by updateId in descending order
+                    data.sort((a, b) => (a.updateId < b.updateId ? 1 : -1));
+
                     const latestItem = data[0]; // Get the latest item
                     document.getElementById('promptInput').value = latestItem.prompt || '';
                     document.getElementById('audienceMessageInput').value = latestItem.audienceMessage || '';
                     document.getElementById('spriteLinkInput').value = latestItem.spriteLink || '';
-                    document.getElementById('bgLinkInput').value = latestItem.bgLink || ''; // New BG Link field
+                    document.getElementById('bgLinkInput').value = latestItem.bgLink || '';
                 } else {
                     console.log('No items returned from the database.');
                     // Handle case where no items are found
@@ -34,11 +37,14 @@
                 const updateId = `update-${new Date().toISOString()}`;
 
                 const newData = {
-                    updateId: updateId,
-                    prompt: document.getElementById('promptInput').value,
-                    audienceMessage: document.getElementById('audienceMessageInput').value,
-                    spriteLink: document.getElementById('spriteLinkInput').value,
-                    bgLink: document.getElementById('bgLinkInput').value // New BG Link field
+                    TableName: 'UpdateLive',
+                    Item: {
+                        updateId: updateId, // Use the generated unique identifier
+                        prompt: document.getElementById('promptInput').value,
+                        audienceMessage: document.getElementById('audienceMessageInput').value,
+                        spriteLink: document.getElementById('spriteLinkInput').value,
+                        bgLink: document.getElementById('bgLinkInput').value // New field
+                    }
                 };
 
                 await fetch(apiURL, {
@@ -48,7 +54,7 @@
                 });
 
                 alert('Data updated successfully');
-                loadData();
+                loadData(); // Reload data after update
             } catch (error) {
                 console.error('Error updating data:', error);
             }
@@ -58,7 +64,7 @@
             document.getElementById('promptInput').value = '';
             document.getElementById('audienceMessageInput').value = '';
             document.getElementById('spriteLinkInput').value = '';
-            document.getElementById('bgLinkInput').value = ''; // New BG Link field
+            document.getElementById('bgLinkInput').value = ''; // Clear the new field
         }
 
         window.onload = () => {
@@ -68,9 +74,8 @@
 </head>
 <body>
     <h1>Game Data Editor</h1>
-    <p id="versionText">1.0</p>
+    <p>version 1.1</p>
     <div>
-        
         <label for="promptInput">Prompt:</label><br>
         <input type="text" id="promptInput" name="prompt"><br>
 
@@ -80,7 +85,7 @@
         <label for="spriteLinkInput">Sprite Link:</label><br>
         <input type="text" id="spriteLinkInput" name="spriteLink"><br>
 
-        <label for="bgLinkInput">BG Link:</label><br>
+        <label for="bgLinkInput">BG Link:</label><br> <!-- New field -->
         <input type="text" id="bgLinkInput" name="bgLink"><br><br>
 
         <button onclick="updateData()">Update Game Data</button>
