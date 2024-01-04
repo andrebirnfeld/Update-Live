@@ -22,28 +22,32 @@
         }
 
         async function updateData() {
-            try {
-                const newData = {
-                    TableName: tableName, // Include the table name in the data object
-                    Item: { // Wrap the data fields under an Item object
-                        prompt: document.getElementById('promptInput').value,
-                        audienceMessage: document.getElementById('audienceMessageInput').value,
-                        spriteLink: document.getElementById('spriteLinkInput').value
-                    }
-                };
+    try {
+        // Generate a unique updateId based on the current timestamp
+        const updateId = `update-${new Date().toISOString()}`;
 
-                await fetch(apiURL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newData)
-                });
-
-                alert('Data updated successfully');
-                loadData(); // Reload data after update
-            } catch (error) {
-                console.error('Error updating data:', error);
+        const newData = {
+            TableName: 'UpdateLive',
+            Item: {
+                updateId: updateId, // Use the generated unique identifier
+                prompt: document.getElementById('promptInput').value,
+                audienceMessage: document.getElementById('audienceMessageInput').value,
+                spriteLink: document.getElementById('spriteLinkInput').value
             }
-        }
+        };
+
+        await fetch(apiURL, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newData)
+        });
+
+        alert('Data updated successfully');
+        loadData(); // Reload data after update
+    } catch (error) {
+        console.error('Error updating data:', error);
+    }
+}
 
         window.onload = loadData;
     </script>
