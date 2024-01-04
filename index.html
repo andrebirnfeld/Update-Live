@@ -25,6 +25,7 @@
             border: none;
             color: white;
             padding: 10px;
+            width: 650px;
         }
         #previewContainer {
             width: 720px;
@@ -150,7 +151,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         <div class="input-section">
             <!-- Input fields -->
             <label for="promptInput">Prompt:</label>
-            <input type="text" id="promptInput" name="prompt">
+            <textarea id="promptInput" name="prompt" style="height: 300px; width: 650px; vertical-align: top; background-color: #333; border: none; color: white; padding: 10px; font-size: 25px; font-family: sans-serif;"></textarea>
+
 
             <label for="audienceMessageInput">Audience Message:</label>
             <input type="text" id="audienceMessageInput" name="audienceMessage">
@@ -160,8 +162,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             <label for="bgLinkInput">Background Link:</label>
             <input type="text" id="bgLinkInput" name="bgLink">
-
-            <button onclick="updateData()">Update Game Data</button>
+            <br>
+            <br>
+            
+            <button  style="height: 100px; width: 450px; onclick="updateData()">Update Game Data</button>
         </div>
         <div class="preview-section">
             <!-- Preview container -->
