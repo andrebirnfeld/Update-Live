@@ -2,6 +2,30 @@
 <html>
 <head>
     <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: sans-serif;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .input-section, .preview-section {
+            flex: 1;
+            margin: 10px;
+        }
+        .input-section label, .input-section input {
+            font-size: 25px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .input-section input {
+            background-color: #333;
+            border: none;
+            color: white;
+            padding: 10px;
+        }
         #previewContainer {
             width: 720px;
             height: 1280px;
@@ -120,27 +144,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
     </script>
 </head>
 <body>
-    <h1>Game Data Editor</h1>
+    <h1>Live Stream Updater</h1>
     <p>version 2.0</p>
-    <div>
-        <label for="promptInput">Prompt:</label><br>
-        <input type="text" id="promptInput" name="prompt"><br>
+    <div class="container">
+        <div class="input-section">
+            <!-- Input fields -->
+            <label for="promptInput">Prompt:</label>
+            <input type="text" id="promptInput" name="prompt">
 
-        <label for="audienceMessageInput">Audience Message:</label><br>
-        <input type="text" id="audienceMessageInput" name="audienceMessage"><br>
+            <label for="audienceMessageInput">Audience Message:</label>
+            <input type="text" id="audienceMessageInput" name="audienceMessage">
 
-        <label for="spriteLinkInput">Sprite Link:</label><br>
-        <input type="text" id="spriteLinkInput" name="spriteLink"><br><br>
-        <label for="bgLinkInput">Background Link:</label><br>
-        <input type="text" id="bgLinkInput" name="bgLink"><br><br>
+            <label for="spriteLinkInput">Sprite Link:</label>
+            <input type="text" id="spriteLinkInput" name="spriteLink">
 
-        <br><br>
-        <p>Preview</p><br>
-        <div id="previewContainer">
-        <img id="spriteImage" src="" alt="Sprite Image">
-        <div id="messageBox"></div><br>
-        <button onclick="updateData()">Update Game Data</button>
-    </div>
+            <label for="bgLinkInput">Background Link:</label>
+            <input type="text" id="bgLinkInput" name="bgLink">
+
+            <button onclick="updateData()">Update Game Data</button>
+        </div>
+        <div class="preview-section">
+            <!-- Preview container -->
+            <p>Preview</p>
+            <div id="previewContainer">
+                <img id="spriteImage" src="" alt="Sprite Image">
+                <div id="messageBox"></div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
